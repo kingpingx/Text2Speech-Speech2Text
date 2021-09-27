@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Speecho {% endblock title %}
+
+{% block head %}
+   <form method="post" enctype="multipart/form-data" class="innerdiv1">
+        {% csrf_token %}
+        <input id="audio_file" type="file" name="myfile" accept="audio/*" required>
+        <button id="sub" type="submit">Upload</button>
+    </form>
+    <div class="innerdiv2">
+        <a href="{{source}}"  download>Download!</a>
+    </div>
+    <div class="d-flex justify-content-center ">
+        <h4 class="foot">Thanks for using !!!!</h3>
+    </div>
+  
+{% endblock head %}
+
+
+
