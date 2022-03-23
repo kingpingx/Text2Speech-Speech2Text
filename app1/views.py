@@ -5,33 +5,42 @@ import os
 
 
 def home(request):
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    dire = BASE_DIR+'\media'
+    for i in os.listdir(dire):
+        print(i)
+        os.remove(BASE_DIR+f'\media\{i}')
+
     return render(request, 'home.html')
 
 def listen(request):
     if request.method == 'POST' and request.FILES['myfile']:
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         file = request.FILES['myfile']
         fs = FileSystemStorage()
         filename = fs.save(file.name, file)
         fn = str(filename).split('.')[0]
         from gtts import gTTS
-        fp1 = f'C:\\Users\\Admin\\Desktop\\listener\\media\\{file.name}'
 
         mytext = ""
-        with open(fp1, 'r', encoding="UTF-8") as f:
+        with open(BASE_DIR+f"/media/{file.name}", 'r', encoding="UTF-8") as f:
            for i in f.read():
                 mytext += i
 
         output = gTTS(text=mytext, lang='hi', slow=False)
 
-        output.save(f"C:\\Users\\Admin\\Desktop\\listener\\media\\{fn}.mp3")
+        output.save(BASE_DIR+f"/media/{fn}.mp3")
 
         fp = f"/media/{fn}.mp3"
+
+        print(fp)
 
         return render(request, 'l.html', {
             'source': fp, 'uploaded' : "File Uploaded",
         })
     else:
-        dire = 'C:\\Users\\Admin\\Desktop\\listener\\media'
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        dire = BASE_DIR+"/media/"
         for f in os.listdir(dire):
             os.remove(os.path.join(dire, f))
         return render(request, 'l.html')
@@ -41,18 +50,19 @@ def listen(request):
 
 def speak(request):
     if request.method == 'POST' and request.FILES['myfile']:
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         file = request.FILES['myfile']
         fs = FileSystemStorage()     
         filename = fs.save(file.name, file)
         fn = str(filename).split('.')[0]
-        fp = f'C:\\Users\\Admin\\Desktop\\listener\\media\\{file.name}'
 
         try:
             from os import path
             from pydub import AudioSegment
             # files.
-            src = fp
-            dst =  f'C:\\Users\\Admin\\Desktop\\listener\\media\\{fn}.wav'
+            src =  BASE_DIR+f"/media/{fn}.mp3"
+
+            dst =  BASE_DIR+f"/media/{fn}.wav"
             # convert wav to mp3.
             sound = AudioSegment.from_mp3(src)
             sound.export(dst, format="wav")
@@ -78,7 +88,7 @@ def speak(request):
             else:
                 print(text)
         
-        completeName = f"C:\\Users\\Admin\\Desktop\\listener\\media\\{fn}.txt"        
+        completeName = BASE_DIR+f"/media/{fn}.txt"        
         with open(completeName, 'w') as file:
             file.write(text)
 
@@ -88,7 +98,8 @@ def speak(request):
             'source': fp2
         })
     else:
-        dire = 'C:\\Users\\Admin\\Desktop\\listener\\media'
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        dire = BASE_DIR+'\media'
         for f in os.listdir(dire):
             os.remove(os.path.join(dire, f))
         return render(request, 's.html')
